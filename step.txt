@@ -1,0 +1,89 @@
+本练习项目知识点汇总如下
+1 web根目录下 用composer安装tp5 
+  命令：composer create-project topthink/think=5.0.* tp5 --prefer-dist
+2 我们在路由定义文件（ application/route.php ）里面添加一些路由规则，如下：
+    return [
+    // 添加路由规则 路由到 index控制器的hello操作方法
+    'hello/:name' => 'index/index/hello',
+    ];
+    该路由规则表示所有 hello 开头的并且带参数的访问都会路由到 index 控制器的 hello 操作方法。
+    路由之前的URL访问地址为：
+    http://tp5.com/hello/thinkphp 现在的访问变成这个，之前的失效。但是此时，
+    访问 http://tp5.com/hello 将发生错误。我们修改 参数为
+    return [
+        // 路由参数name为可选
+        'hello/[:name]' => 'index/hello',
+        ];
+    []中的，表示可有可无。
+    return [
+    // 路由参数name为可选
+    'hello/[:name]$' => 'index/hello',
+    ];
+    当路由规则以 $ 结尾的时候就表示当前路由规则需要完整匹配。
+    http://tp5.com/hello // 正确匹配
+    http://tp5.com/hello/thinkphp // 正确匹配
+    http://tp5.com/hello/thinkphp/val/value // 不会匹配
+    闭包
+    //闭包定义
+    'nihao/[:name]'=>function($name='thinkphp'){
+        return '你好 '.$name.'!';
+    },
+    //路由参数
+    return [
+    // 定义路由的请求类型和后缀
+    'hello/[:name]' => ['index/hello', ['method' => 'get', 'ext' => 'html']],
+    ]; 
+    http://tp5.com/hello // 无效
+    http://tp5.com/hello.html // 有效
+    http://tp5.com/hello/thinkphp // 无效
+    http://tp5.com/hello/thinkphp.html // 有效
+    //简单起见，规则统一进行定义
+    //变量规则统一定义
+    '__pattern__'=>[
+        'name'=>'\w+',
+        'id'  =>'\d+',
+        'year'=>'\d{4}',
+        'month'=>'\d{2}',
+    ],
+    //路由规则定义
+    'blog/:id'  =>'blog/get',
+    'blog/:name'  =>'blog/read',
+    'blog-<year>-<month>'  =>'blog/archive',
+    //url链接生成
+    <a href="{:url('blog/read',['name'=>'thinkphp'])}">跳到blog</a>
+3 请求与响应
+    //请求对象
+    public function req(){
+    //方式一 传统方式
+    //$request=Request::instance();
+    // halt($request->url());
+    //方式二 继承了Controller
+    halt($this->request->url());
+    }
+    //方式三 注入。参数为系统自动注入，访问时不需要传参。
+    public function req2(Request $request){
+        halt($request->url());
+    }
+    //动态绑定属性
+    可以在父控制器base 初始化方法_initialize绑定 当前登录对象到 request中。方便以后在自控制器中调用。
+    class Base extends Controller{
+        public function _initialize(){
+            $user=User::get(Session::get('user_id'));
+            Request::instance()->bind('user',$user);
+        }
+    }
+    子类继承了基类并调用
+    public function index(Request $request)
+    {
+    echo $request->user->id;
+    echo $request->user->name;
+    }
+    //获取请求的变量
+    public function hello(Request $request)
+    {
+    echo '请求参数：';
+    dump($request->param());
+    echo 'name:'.$request->param('name');
+    }
+    //param 方法支持变量的过滤和默认值，例如
+    echo '<br/>test:'.$request->param('test','thinkphp','strtoupper');
