@@ -44,4 +44,12 @@ return [
     'blog/:id'  =>'blog/get',
     'blog/:name'  =>'blog/read',
     'blog-<year>-<month>'  =>'blog/archive',
+    //用户路由规则定义
+    'user/index'=>'index/user/index',
+    'user/create'=>'index/user/create',
+    'user/add'=>'index/user/add',
+    'user/add_list'=>'index/user/add_list',
+    'user/update/:id'=>'index/user/update',
+    'user/delete/:id'=>'index/user/delete',
+    'user/:id'=>'index/read',
 ];
