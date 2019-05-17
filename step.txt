@@ -87,3 +87,45 @@
     }
     //param 方法支持变量的过滤和默认值，例如
     echo '<br/>test:'.$request->param('test','thinkphp','strtoupper');
+4 数据库
+    // Db::query(); Db::execute();
+    query方法返回的结果是一个数据集（数组），如果没有查询到数据则返回空数组。
+    query 方法用于查询，默认情况下返回的是数据集（二维数组）， execute 方法的返回值是影响的行
+    数。
+    //参数绑定 占位符绑定
+    $result=Db::execute('insert into fa_user (id,name) value (?,?)',['10','xiaoliu2']);
+    $result=Db::execute('insert into fa_user (id,name) value (:id,:name)',['id'=>'11','name'=>'xiaoliu3']);
+    // table方法需要表前缀。name方法不需要前缀，别的都相同
+    // 插入记录
+    Db::table('think_data')
+    ->insert(['id' => 18, 'name' => 'thinkphp', 'status' => 1]);
+    // 更新记录
+    Db::table('think_data')
+    ->where('id', 18)
+    ->update(['name' => "hello"]);
+    // 查询数据
+    $list = Db::table('think_data')
+    ->where('id', 18)
+    ->select();
+    // 删除数据
+    Db::table('think_data')
+    ->where('id', 18)
+    ->delete();
+    //事物的支持
+    //事务方式一
+    Db::transaction(function(){
+        Db::table('fa_user')->delete(3);
+        Db::table('fa_user')->insert(['id' => 28, 'name' => 'thinkphp', 'status' => 1]);
+    });
+    //事务方式二
+    Db::startTrans();
+    try{
+        Db::table('fa_user')->delete(3);
+        Db::table('fa_user')->insert(['id' => 28, 'name' => 'thinkphp', 'status' => 1]); 
+        Db::commit();
+    }catch(\Exception $e){
+        Db::rollback();
+    }
+    注意：：
+        事务操作只对支持事务的数据库，并且设置了数据表为事务类型才有效，在Mysql数据库中请设置表类型
+        为 InnoDB 。并且事务操作必须使用同一个数据库连接。
