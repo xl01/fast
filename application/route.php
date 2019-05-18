@@ -51,5 +51,5 @@ return [
     'user/add_list'=>'index/user/add_list',
     'user/update/:id'=>'index/user/update',
     'user/delete/:id'=>'index/user/delete',
-    'user/:id'=>'index/read',
+    'user/:id'=>'index/user/read',
 ];
