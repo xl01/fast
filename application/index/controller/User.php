@@ -23,10 +23,10 @@ class User extends Base{
         if (true !== $result) {
         return $result;
         }
-        $user = new UserModel;
+
         // 数据保存
-        $user->allowField(true)->save($data);
-        return '用户[ ' . $user->nickname . ':' . $user->id . ' ]新增成功';
+        $this->obj->allowField(true)->save($data);
+        return '用户[ ' . $this->obj->nickname . ':' . $this->obj->id . ' ]新增成功';
         //如果有一些个别的验证没有在验证器里面定义，也可以使用静态方法单独处理，例如下面对birthday字段单独
         //验证是否是一个有效的日期格式：
         $data = input('post.');
@@ -50,5 +50,15 @@ class User extends Base{
     }
     public function lst(){
         halt($this->obj->scope('status')->select());
+    }
+    public function index(){
+        $list=$this->obj->paginate(3);
+        $this->view->replace([
+            '__PUBLIC__' => '/static',
+            ]);
+        return $this->fetch('',[
+            'list'=>$list,
+            'count'=>count($list)
+        ]);
     }
 }

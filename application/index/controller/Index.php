@@ -10,12 +10,7 @@ class Index extends Base
 {
     public function index($name='')
     {
-        if($name=='thinkphp'){
-            $this->success('欢迎使用thinkphp','hello2');
-        }else{
-            $this->error('错误的name','guest');
-        }
-        // return $this->fetch();
+        
     }
     public function hello2(){
         return 'hello thinkphp!';
